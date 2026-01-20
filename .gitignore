@@ -1,7 +1,7 @@
 .vscode/
 *.th
 pretrain/
-**/test/
+# **/test/
 **/resoursces/models/
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,linux,windows,audio,text
