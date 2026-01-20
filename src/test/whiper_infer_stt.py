@@ -37,7 +37,7 @@ def main():
             model=model,
             tokenizer=processor.tokenizer,
             feature_extractor=processor.feature_extractor,
-            torch_dtype=torch_dtype,
+            torch_dtype=torch_dtype, # pipeline에서는 여전히 torch_dtype을 사용하거나 생략 가능합니다.
             device=device,
         )
 
@@ -45,15 +45,17 @@ def main():
 
         # STT 실행 옵션 설정 (Hugging Face 권장 사항 반영)
         # '아 아 아...'와 같은 반복 현상을 방지하기 위해 디코딩 파라미터를 강화합니다.
+        # max_new_tokens는 특수 토큰(3개)을 포함하여 448을 넘지 않아야 하므로 445로 설정합니다.
         generate_kwargs = {
             "language": "korean",
-            "max_new_tokens": 448,
+            "max_new_tokens": 445, 
             "num_beams": 1,
             "condition_on_prev_tokens": False,
             "compression_ratio_threshold": 1.35,
             "temperature": (0.0, 0.2, 0.4, 0.6, 0.8, 1.0),
             "logprob_threshold": -1.0,
             "no_speech_threshold": 0.6,
+            "return_timestamps": True,
         }
 
         # STT 실행
