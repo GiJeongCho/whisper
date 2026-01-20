@@ -51,7 +51,11 @@ class WhisperSTT:
         return result
 
 # 모델 인스턴스 싱글톤 관리 (서버 시작 시 로드)
-MODEL_PATH = os.getenv("WHISPER_MODEL_PATH", "/app/models/whisper-large-v3")
+# 현재 파일 위치를 기준으로 상대 경로 설정
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_MODEL_PATH = os.path.abspath(os.path.join(CURRENT_DIR, "..", "resoursces", "models", "whisper-large-v3"))
+
+MODEL_PATH = os.getenv("WHISPER_MODEL_PATH", DEFAULT_MODEL_PATH)
 stt_engine = None
 
 def get_stt_engine():

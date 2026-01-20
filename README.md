@@ -1,31 +1,35 @@
 # Whisper STT API
 
-OpenAI의 `whisper-large-v3` 모델을 사용하여 음성 파일을 텍스트로 변환해주는 FastAPI 기반 API 서버입니다.
+OpenAI의 `whisper-large-v3` 모델을 사용하여 음성 파일을 텍스트로 변환해주는 FastAPI 기반 API 서버입니다. `uv`를 사용하여 의존성 관리와 빌드 속도를 최적화했습니다.
 
 ## 주요 기능
 - **STT 추론**: WAV, MP3 등의 음성 파일을 텍스트로 변환 (타임스탬프 포함)
-- **언어 선택**: `language` 파라미터를 통해 전사할 언어 지정 가능
-- **Docker 지원**: Podman/Docker를 통해 간편하게 컨테이너화 가능
+- **고성능 디코딩**: 반복 환각(Hallucination) 방지 및 안정적인 파라미터 적용
+- **Docker/Podman 지원**: 컨테이너화를 통한 간편한 배포 및 GPU 가속 지원
 
 ## 실행 방법
 
-### 1. 로컬 환경 실행 (uv 사용 시)
+### 1. 로컬 환경 실행 (uv 사용)
+가상환경 활성화 없이 `uv` 명령어로 즉시 실행 가능합니다.
 ```bash
-# 의존성 설치 및 가상환경 구축
+# 의존성 설치 및 동기화
 uv sync
 
-# API 실행
-uv run src/api.py
+# 서버 실행 (자동으로 가상환경 내 패키지 사용)
+uv run uvicorn src.api:app --host 0.0.0.0 --port 8010 --reload
 ```
 
 ### 2. 컨테이너 환경 실행 (Podman)
-`uv`를 사용하여 빌드 속도가 최적화되었습니다. 모델 파일은 호스트 시스템의 경로를 컨테이너 내부(`/app/models/whisper-large-v3`)로 마운트하여 사용합니다.
+GPU 가속을 위해 NVIDIA 컨테이너 툴킷이 설치되어 있어야 합니다.
 
+#### 이미지 빌드
 ```bash
-# 이미지 빌드
 podman build -t whisper-stt-api .
+```
 
-# 컨테이너 실행
+#### 컨테이너 실행
+호스트의 모델 폴더를 컨테이너 내부(`/app/models/whisper-large-v3`)로 마운트합니다.
+```bash
 podman run -d \
   --name whisper-api \
   --device nvidia.com/gpu=all \
@@ -37,25 +41,22 @@ podman run -d \
 ## API 사용법
 
 ### STT 변환 (`POST /v1/stt`)
-음성 파일을 업로드하여 텍스트 결과를 가져옵니다.
+음성 파일을 업로드하여 텍스트 결과를 JSON으로 반환받습니다.
 
-- **URL**: `http://localhost:8010/v1/stt`
-- **Method**: `POST`
-- **Payload**:
-  - `file`: 음성 파일 (wav, mp3 등)
-  - `language`: 언어 코드 (기본값: `korean`)
+- **Endpoint**: `http://localhost:8010/v1/stt`
+- **Parameters**:
+  - `file`: 음성 파일 (wav, mp3, m4a 등)
+  - `language`: 언어 설정 (기본값: `korean`)
 
-**예시 (cURL):**
+**cURL 테스트:**
 ```bash
 curl -X 'POST' \
   'http://localhost:8010/v1/stt' \
-  -H 'accept: application/json' \
   -H 'Content-Type: multipart/form-data' \
-  -F 'file=@audio_file.wav' \
+  -F 'file=@sample.wav' \
   -F 'language=korean'
 ```
 
-## API 문서
-서버가 실행 중일 때 아래 주소에서 Swagger UI를 확인할 수 있습니다.
-- `http://localhost:8010/docs`
-
+## API 문서 및 모니터링
+- **Swagger UI**: [http://localhost:8010/docs](http://localhost:8010/docs)
+- **Health Check**: [http://localhost:8010/health](http://localhost:8010/health)
