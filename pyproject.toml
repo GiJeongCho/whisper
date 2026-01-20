@@ -1,0 +1,20 @@
+[project]
+name = "whisper-stt-api"
+version = "0.1.0"
+description = "Whisper Large-v3 STT API powered by FastAPI and uv"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
+    "torch",
+    "transformers",
+    "accelerate",
+    "numpy",
+    "librosa",
+]
+
+[tool.uv]
+dev-dependencies = []
+
