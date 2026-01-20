@@ -19,6 +19,7 @@ app.include_router(router_v1)
 async def health_check():
     return {"status": "healthy"}
 
+# src/api.py 파일 하단
 if __name__ == "__main__":
-    uvicorn.run("api:app", host="0.0.0.0", port=8010, reload=True)
+    uvicorn.run("src.api:app", host="0.0.0.0", port=8010, reload=True)
 
