@@ -98,16 +98,16 @@ uv lock
 
 
 ==포드맨 사용 (docker 대체) ==
-podman build -t whisper-stt:v0.0.1 -f Dockerfile . 
+podman build -t pps/whisper-stt:v0.0.1 -f Dockerfile . 
 podman build prune -a | 빌드과정 생성된 캐쉬 날리기 
-podman build –no-cache -t whisper-stt:v0.0.1 -f Dockerfile . | 이전 기록 무시하고 새로 맘
+podman build –no-cache -t pps/whisper-stt:v0.0.1 -f Dockerfile . | 이전 기록 무시하고 새로 맘
 
 
 
-podman run -d -p 8001:8001 --restart always --name whisper whisper-stt:v0.0.1
+podman run -d -p 8010:8010 --restart always --name whisper pps/whisper-stt:v0.0.1
 
-podman logs -f niq
-podman rm -f niq
-podman rmi -f whisper-stt:v0.0.1
+podman logs -f pps/whisper-stt:v0.0.1
+podman rm -f pps/whisper-stt:v0.0.1
+podman rmi -f pps/whisper-stt:v0.0.1
 
 ```
