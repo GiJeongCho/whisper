@@ -15,6 +15,6 @@ dependencies = [
     "librosa",
 ]
 
-[tool.uv]
-dev-dependencies = []
+[dependency-groups]
+dev = []
 

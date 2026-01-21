@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def main():
     # 설정
     model_path = "/home/pps-nipa/NIQ/fish/whisper/src/resoursces/models/whisper-large-v3"
-    audio_path = "/home/pps-nipa/NIQ/fish/whisper/src/test/4번자리_나연.wav"
+    audio_path = "/home/pps-nipa/NIQ/fish/whisper/src/test/clean_4번자리_나연.wav"
     
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32

@@ -60,3 +60,54 @@ curl -X 'POST' \
 ## API 문서 및 모니터링
 - **Swagger UI**: [http://localhost:8010/docs](http://localhost:8010/docs)
 - **Health Check**: [http://localhost:8010/health](http://localhost:8010/health)
+
+
+
+```개발자용
+== 처음 사용 시 
+conda create -n whisper python=3.10 -y
+conda activate whisper
+
+# pytorch/torchaudio/cudatoolkit은 conda로 먼저
+pip install uv
+
+# 나머지 의존성은 uv 또는 pip로
+uv pip install -r requirements.txt
+
+# 또는
+pip install -r requirements.txt
+
+== 그 이후 사용 시 
+conda activate whisper
+
+– 일반적 사용 시 
+
+ssh -L 8010:localhost:8010 elice-vm
+ppsnipa5763@@
+
+cd /home/pps-nipa/NIQ/fish/whisper
+conda activate whisper
+uv run uvicorn src.api:app --host 0.0.0.0 --port 8010 --reload
+
+http://localhost:8010/docs
+http://localhost:8010/redoc
+
+== uv lock만들기
+rm uv.lock
+uv lock
+
+
+==포드맨 사용 (docker 대체) ==
+podman build -t whisper-stt:v0.0.1 -f Dockerfile . 
+podman build prune -a | 빌드과정 생성된 캐쉬 날리기 
+podman build –no-cache -t whisper-stt:v0.0.1 -f Dockerfile . | 이전 기록 무시하고 새로 맘
+
+
+
+podman run -d -p 8001:8001 --restart always --name whisper whisper-stt:v0.0.1
+
+podman logs -f niq
+podman rm -f niq
+podman rmi -f whisper-stt:v0.0.1
+
+```
